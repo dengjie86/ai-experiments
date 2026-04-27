@@ -3,6 +3,7 @@
 *.pyc
 __pycache__/
 .ropeproject/
+.DS_Store
 
 *.pkl
 *.npy
@@ -14,12 +15,14 @@ __pycache__/
 ## Project
 
 *.pth
-
 /notebooks/*wild.ipynb
-/experiments
-/data/
-/ckpt/
-/output/
+/experiments/*/data/
+/experiments/*/ckpt/
+/experiments/*/output/
+/experiments/*/__pycache__/
 /.claude_tent_paper.pdf
 /.claude_tent_supp.zip
 /.claude_tent_supp/
+/data/
+/ckpt/
+/output/
