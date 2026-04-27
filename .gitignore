@@ -17,3 +17,9 @@ __pycache__/
 
 /notebooks/*wild.ipynb
 /experiments
+/data/
+/ckpt/
+/output/
+/.claude_tent_paper.pdf
+/.claude_tent_supp.zip
+/.claude_tent_supp/
