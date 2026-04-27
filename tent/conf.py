@@ -20,6 +20,7 @@ from yacs.config import CfgNode as CfgNode
 # Global config object (example usage: from core.config import cfg)
 _C = CfgNode()
 cfg = _C
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 # ----------------------------- Model options ------------------------------- #
@@ -111,13 +112,13 @@ _C.DESC = ""
 _C.RNG_SEED = 1
 
 # Output directory
-_C.SAVE_DIR = "./output"
+_C.SAVE_DIR = os.path.join(_BASE_DIR, "output")
 
 # Data directory
-_C.DATA_DIR = "./data"
+_C.DATA_DIR = os.path.join(_BASE_DIR, "data")
 
 # Weight directory
-_C.CKPT_DIR = "./ckpt"
+_C.CKPT_DIR = os.path.join(_BASE_DIR, "ckpt")
 
 # Log destination (in SAVE_DIR)
 _C.LOG_DEST = "log.txt"
@@ -125,8 +126,8 @@ _C.LOG_DEST = "log.txt"
 # Log datetime
 _C.LOG_TIME = ''
 
-# # Config destination (in SAVE_DIR)
-# _C.CFG_DEST = "cfg.yaml"
+# Config destination (in SAVE_DIR)
+_C.CFG_DEST = "config.yaml"
 
 # --------------------------------- Default config -------------------------- #
 _CFG_DEFAULT = _C.clone()
@@ -180,6 +181,7 @@ def load_cfg_fom_args(description="Config options."):
 
     merge_from_file(args.cfg_file)
     cfg.merge_from_list(args.opts)
+    assert_and_infer_cfg()
 
     log_dest = os.path.basename(args.cfg_file)
     log_dest = log_dest.replace('.yaml', '_{}.txt'.format(current_time))

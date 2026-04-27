@@ -62,9 +62,9 @@ the default model for [RobustBench](https://github.com/RobustBench/robustbench).
 Run from the repository root with:
 
 ```python
-python experiments/tent/cifar10c.py --cfg experiments/tent/cfgs/source.yaml
-python experiments/tent/cifar10c.py --cfg experiments/tent/cfgs/norm.yaml
-python experiments/tent/cifar10c.py --cfg experiments/tent/cfgs/tent.yaml
+python tent/cifar10c.py --cfg tent/cfgs/source.yaml
+python tent/cifar10c.py --cfg tent/cfgs/norm.yaml
+python tent/cifar10c.py --cfg tent/cfgs/tent.yaml
 ```
 
 **Result**: tent reduces the error (%) across corruption types at the most severe level of corruption (level 5).
@@ -84,9 +84,9 @@ WideResNet for [AugMix: A Simple Data Processing Method to Improve Robustness an
 **Usage**:
 
 ```python
-python experiments/tent/cifar10c.py --cfg experiments/tent/cfgs/source.yaml MODEL.ARCH Hendrycks2020AugMix_WRN
-python experiments/tent/cifar10c.py --cfg experiments/tent/cfgs/norm.yaml MODEL.ARCH Hendrycks2020AugMix_WRN
-python experiments/tent/cifar10c.py --cfg experiments/tent/cfgs/tent.yaml MODEL.ARCH Hendrycks2020AugMix_WRN
+python tent/cifar10c.py --cfg tent/cfgs/source.yaml MODEL.ARCH Hendrycks2020AugMix_WRN
+python tent/cifar10c.py --cfg tent/cfgs/norm.yaml MODEL.ARCH Hendrycks2020AugMix_WRN
+python tent/cifar10c.py --cfg tent/cfgs/tent.yaml MODEL.ARCH Hendrycks2020AugMix_WRN
 ```
 
 **Result**: tent reduces the error (%) across corruption types at the most severe level of corruption (level 5).

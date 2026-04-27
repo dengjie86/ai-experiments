@@ -16,10 +16,13 @@ __pycache__/
 
 *.pth
 /notebooks/*wild.ipynb
-/experiments/*/data/
-/experiments/*/ckpt/
-/experiments/*/output/
-/experiments/*/__pycache__/
+/*/data/*
+!/*/data/.gitkeep
+/*/ckpt/*
+!/*/ckpt/.gitkeep
+/*/output/*
+!/*/output/.gitkeep
+/*/__pycache__/
 /.claude_tent_paper.pdf
 /.claude_tent_supp.zip
 /.claude_tent_supp/
