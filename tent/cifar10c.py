@@ -3,7 +3,7 @@ import logging
 import torch
 import torch.optim as optim
 
-from robustbench.data import load_cifar10c
+from robustbench.data import load_cifar10c, load_cifar100c
 from robustbench.model_zoo.enums import ThreatModel
 from robustbench.utils import load_model
 from robustbench.utils import clean_accuracy as accuracy
@@ -17,6 +17,14 @@ from conf import cfg, load_cfg_fom_args
 logger = logging.getLogger(__name__)
 
 
+def load_cifarxc(dataset, n_examples, severity, data_dir, corruptions):
+    if dataset == "cifar10":
+        return load_cifar10c(n_examples, severity, data_dir, False, corruptions)
+    if dataset == "cifar100":
+        return load_cifar100c(n_examples, severity, data_dir, False, corruptions)
+    raise ValueError(f"Unsupported corruption dataset: {dataset}")
+
+
 def evaluate(description):
     load_cfg_fom_args(description)
     # configure model
@@ -25,25 +33,30 @@ def evaluate(description):
     if cfg.MODEL.ADAPTATION == "source":
         logger.info("test-time adaptation: NONE")
         model = setup_source(base_model)
-    if cfg.MODEL.ADAPTATION == "norm":
+    elif cfg.MODEL.ADAPTATION == "norm":
         logger.info("test-time adaptation: NORM")
         model = setup_norm(base_model)
-    if cfg.MODEL.ADAPTATION == "tent":
+    elif cfg.MODEL.ADAPTATION == "tent":
         logger.info("test-time adaptation: TENT")
         model = setup_tent(base_model)
+    else:
+        raise ValueError(f"Unsupported adaptation mode: {cfg.MODEL.ADAPTATION}")
     # evaluate on each severity and type of corruption in turn
     for severity in cfg.CORRUPTION.SEVERITY:
         for corruption_type in cfg.CORRUPTION.TYPE:
             # reset adaptation for each combination of corruption x severity
             # note: for evaluation protocol, but not necessarily needed
-            try:
-                model.reset()
+            reset_model = getattr(model, "reset", None)
+            if callable(reset_model):
+                reset_model()
                 logger.info("resetting model")
-            except:
+            else:
                 logger.warning("not resetting model")
-            x_test, y_test = load_cifar10c(cfg.CORRUPTION.NUM_EX,
-                                           severity, cfg.DATA_DIR, False,
-                                           [corruption_type])
+            x_test, y_test = load_cifarxc(cfg.CORRUPTION.DATASET,
+                                          cfg.CORRUPTION.NUM_EX,
+                                          severity,
+                                          cfg.DATA_DIR,
+                                          [corruption_type])
             x_test, y_test = x_test.cuda(), y_test.cuda()
             acc = accuracy(model, x_test, y_test, cfg.TEST.BATCH_SIZE)
             err = 1. - acc
@@ -64,7 +77,7 @@ def setup_norm(model):
     The statistics are measured independently for each batch;
     no running average or other cross-batch estimation is used.
     """
-    norm_model = norm.Norm(model)
+    norm_model = norm.Norm(model, eps=cfg.BN.EPS, momentum=cfg.BN.MOM)
     logger.info(f"model for adaptation: %s", model)
     stats, stat_names = norm.collect_stats(model)
     logger.info(f"stats for adaptation: %s", stat_names)
@@ -79,6 +92,7 @@ def setup_tent(model):
     set up the optimizer, and then tent the model.
     """
     model = tent.configure_model(model)
+    tent.check_model(model)
     params, param_names = tent.collect_params(model)
     optimizer = setup_optimizer(params)
     tent_model = tent.Tent(model, optimizer,
@@ -118,4 +132,4 @@ def setup_optimizer(params):
 
 
 if __name__ == '__main__':
-    evaluate('"CIFAR-10-C evaluation.')
+    evaluate("CIFAR-C evaluation.")

@@ -65,6 +65,7 @@ Run from the repository root with:
 python tent/cifar10c.py --cfg tent/cfgs/source.yaml
 python tent/cifar10c.py --cfg tent/cfgs/norm.yaml
 python tent/cifar10c.py --cfg tent/cfgs/tent.yaml
+python tent/cifar10c.py --cfg tent/cfgs/tent_cifar100.yaml
 ```
 
 **Result**: tent reduces the error (%) across corruption types at the most severe level of corruption (level 5).
