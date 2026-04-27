@@ -136,10 +136,10 @@ _CFG_DEFAULT.freeze()
 
 def assert_and_infer_cfg():
     """Checks config values invariants."""
-    err_str = "Unknown adaptation method."
-    assert _C.MODEL.ADAPTATION in ["source", "norm", "tent"]
-    err_str = "Log destination '{}' not supported"
-    assert _C.LOG_DEST in ["stdout", "file"], err_str.format(_C.LOG_DEST)
+    assert _C.MODEL.ADAPTATION in ["source", "norm", "tent"], \
+        "Unknown adaptation method."
+    assert _C.CORRUPTION.DATASET in ["cifar10", "cifar100"], \
+        "Unknown corruption dataset."
 
 
 def merge_from_file(cfg_file):
